@@ -1,6 +1,5 @@
 ---
 title: "My title"
-subtitle: "My subtitle if needed"
 author: 
   - Eunkyo Oh
 thanks: "Code and data are available at: LINK."
@@ -23,8 +22,50 @@ library(tidyverse)
 
 # Data
 
+The data we are going to analyze is the result of Canadian General Social Survey on Family (2017). The data is organized in respect to its age, sex, education, number of children, and other variables totaling up to eighty one entries. This survey was performed from February 2 to November 30, 2017, and it may not correctly represent the current state of the respondents' familial status. Each respondent is fifteen years old or older, a full-time residents in Canada excluding Yukon, Northwest Territories, and Yukon. There are 20602 responses in the data. We obtain our dataset from the University of Toronto Library, available to University of Toronto students and faculty members. This data can also be found in databases of other academic institutions to their staff and students. We modify and clean our data using packages `tidyverse` [@citetidyverse] and `janitor` [@citejanitor] using the  and the statistical programming language R [@citeR]. 
 
-# Model
+How we organized the data 
+
+Table of dataset sneak peek
+
+```{r dataextract, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(knitr)
+library(dplyr)
+
+# Read in the csv
+gssurvey <- read_csv(here::here("outputs/data/gss.csv"))
+
+# Pick only the necessary columns
+gssurvey <- 
+  gssurvey |>
+  select(age, 
+         feelings_life, 
+         sex,
+         education, 
+         own_rent, 
+         living_arrangement, 
+         self_rated_health, 
+         self_rated_mental_health, 
+         religion_has_affiliation, 
+         income_family, 
+         income_respondent)
+
+gssurvey |> 
+  slice(1:10) |> 
+  kable(
+    caption = "sdsd",
+    #col.names = c("Municipality", "Name of Location", "Religion of Practice"),
+    #digits = 1,
+    booktabs = TRUE, 
+    linesep = ""
+  ) 
+
+```
+
+age vs feelings
+sex vs feelings
+education vs feelings
 
 # Results
 
@@ -32,7 +73,11 @@ library(tidyverse)
 
 ## First discussion point
 
+why ____ has such high count
+
 ## Second discussion point
+
+why ____ has such high correlation
 
 ## Third discussion point
 
