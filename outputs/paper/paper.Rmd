@@ -1,12 +1,15 @@
 ---
-title: "My title"
+title: "How Residents of Canada Feel about Life and its Correlations with Other Variables in General Social Survey 2017"
 author: 
   - Eunkyo Oh
-thanks: "Code and data are available at: https://github.com/oheunkyo/."
+thanks: "Code and data are available at: https://github.com/oheunkyo/Feelings-on-Life-GSS."
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 output:
-  bookdown::pdf_document2
+  bookdown::pdf_document2:
+    includes:  
+        in_header: preamble-latex.tex 
+        # https://stackoverflow.com/questions/16626462/figure-position-in-markdown-when-converting-to-pdf-with-knitr-and-pandoc/33801326#33801326
 toc: FALSE
 bibliography: references.bib
 ---
@@ -26,7 +29,8 @@ The data we are going to analyze is the result of Canadian General Social Survey
 
 How we organized the data 
 
-Table of dataset sneak peek
+Table \@ref(tab:dataextract) represents the first ten rows of our dataset. The table was created with `knitr::kable()` [@citeknitr].
+
 
 ```{r dataextract, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)

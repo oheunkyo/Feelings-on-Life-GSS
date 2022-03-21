@@ -1,4 +1,4 @@
-# paper 3
+# How Residents of Canada Feel about Life and its Correlations with Other Variables in General Social Survey 2017
 
 This repository contains a paper using statistical methods to find_ ___
 
