@@ -224,7 +224,6 @@ mhealth <-
 
 (health + mhealth)
 ```
-removeed NA and DOn't KNow responses
 
 Finally, we will inspect two closely related variables: 'Self Rated Health' and 'Self Rated Mental Health'. These two variables report the self-examined status on the respondents' mental and physical health. Figure 5 show the relationship between feelings on life and self rated health, and figure 6 show the relationship between feelings on life and self rated mental health. In both of the graphs, responses of `Don't Know` and `NA` have been filtered out to accurately assess the possible correlation. Figure 5 displays that 
 
