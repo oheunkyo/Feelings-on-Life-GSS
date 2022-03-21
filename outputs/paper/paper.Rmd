@@ -22,15 +22,13 @@ library(tidyverse)
 
 # Introduction
 
+We will refer to feelings about life as a whole as feelings on life throughtout the paper
 
 # Data
 
-The data we are going to analyze is the result of Canadian General Social Survey on Family (2017). The data is organized in respect to its age, sex, education, number of children, and other variables totaling up to eighty one entries. This survey was performed from February 2 to November 30, 2017, and it may not correctly represent the current state of the respondents' familial status. Each respondent is fifteen years old or older, a full-time residents in Canada excluding Yukon, Northwest Territories, and Yukon. There are 20602 responses in the data. We obtain our dataset from the University of Toronto Library, available to University of Toronto students and faculty members. This data can also be found in databases of other academic institutions to their staff and students. We modify and clean our data using packages `tidyverse` [@citetidyverse] and `janitor` [@citejanitor] using the  and the statistical programming language R [@citeR]. 
+The data we are going to analyze is the result of Canadian General Social Survey on Family (2017). The data is organized in respect to its age, sex, education, number of children, and other variables totaling up to eighty one entries. This survey was performed from February 2 to November 30, 2017, and it may not correctly represent the current state of the respondents' familial status. Each respondent is fifteen years old or older, a full-time residents in Canada excluding Yukon, Northwest Territories, and Yukon. There are 20602 responses in the data. We obtain our dataset from the University of Toronto Library, available to University of Toronto students and faculty members. This data can also be found in databases of other academic institutions to their staff and students. We modify and clean our data using packages `tidyverse` [@citetidyverse] and `janitor` [@citejanitor] using the and the statistical programming language R [@citeR]. 
 
-How we organized the data 
-
-Table \@ref(tab:dataextract) represents the first ten rows of our dataset. The table was created with `knitr::kable()` [@citeknitr].
-
+After obtaining our data, we reduce the number of variables to only contain the necessary columns. In this paper, we will focus on six columns: age, feelings about life as a whole, sex, self rated health, self rated mental health, and household income. Age is given as an number with one digit after the decimal point with the lowest possible number being 15. The column has been named as `AGEC`. Column `SEX` represents the self reported sex of the respondent with `1` being male and `2` being female. The responses has been renamed to `male` and `female` respectably. Feelings about life as a whole is in the variable `SLM_01`, and it is a eleven-point scale question on how the respondent perceives life as a whole including satisfaction. Zero in the scale means 'Very Dissatisfied' and ten means 'Very Satisfied'. Variables `SRH_110` and `SRH_115` are the self rated health and self rated mental health respectably. Respondents' answers were recorded with a numeric value between one to five, where one means 'Excellent' health or mental health and five means 'Poor' health or mental health. The answers have been renamed to `Excellent`, `Very good`, `Good`, `Fair`, and `Poor`. The answers also include `NA` and `Don't know`, which has been renamed accordingly as well. Finally, household income is reported in the variable `FAMINCG2` and it is reported in increments of 25,000 Canadian dollars, up to 125,000 dollars. All variables have been renamed as following for better readability: `age`, `sex`, `feelings_life`, `self_rated_health`, `self_rated_mental_health`, and `income_family`.
 
 ```{r dataextract, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -53,22 +51,22 @@ gssurvey <-
 gssurveyagegroup <- 
   gssurvey |> 
   mutate(age_group = 
-           case_when(age < 26 ~ "16-25",
-                     age < 36 ~ "26-35",
-                     age < 46 ~ "36-45",
-                     age < 56 ~ "46-55",
-                     age < 66 ~ "56-65",
-                     age < 76 ~ "66-75",
-                     age < 100 ~ ">76"
+           case_when(age < 25 ~ "15-24",
+                     age < 35 ~ "25-34",
+                     age < 45 ~ "35-44",
+                     age < 55 ~ "45-54",
+                     age < 65 ~ "55-64",
+                     age < 75 ~ "65-74",
+                     age < 100 ~ ">75"
                      ),
          age_group = factor(age_group,
-                            levels = c("16-25",
-                                       "26-35",
-                                       "36-45",
-                                       "46-55",
-                                       "56-65",
-                                       "66-75",
-                                       ">76"
+                            levels = c("15-24",
+                                       "25-34",
+                                       "35-44",
+                                       "45-54",
+                                       "55-64",
+                                       "65-74",
+                                       ">75"
                                        )
                             )
          )
@@ -76,15 +74,16 @@ gssurveyagegroup <-
 gssurvey |> 
   slice(1:10) |> 
   kable(
-    caption = "sdsd",
-    #col.names = c("Municipality", "Name of Location", "Religion of Practice"),
-    #digits = 1,
+    caption = "First ten rows of the responses in GSS 2017 with only necessary columns",
+    col.names = c("Age", "Feelings on Life", "Sex", "Self Rated Health", "Self Rated Mental Health", "Family Income"),
+    digits = 1,
     booktabs = TRUE, 
     linesep = ""
   ) 
 
 ```
 
+Table \@ref(tab:dataextract) represents the first ten rows of our dataset. The table was created with `knitr::kable()` [@citeknitr]. We are interested in which variable show signs of correlation with the responses about feelings on life as a whole. Figure \@ref(fig:feelingscount) shows the overall distribution of the responses on how respondents feel about life. From this figure, it is clear that general population has a positive outlook on life. Most of the responses are above 6, with the highest number being 8. Second most popular response was 10, the best score one can give. Figures in the paper were created with `ggplot2` [@citeggplot]
 
 ```{r feelingscount, fig.cap="Number of Perceived Feelings on Life Responses", echo = FALSE, warning=FALSE, message=FALSE}
 gssurvey |> 
@@ -109,6 +108,7 @@ gssurvey |>
   scale_x_continuous(breaks=seq(0, 10, 1))
 ```
 
+First variable I chose to examine was 'Sex'. Figure \@ref(fig: feelingsvssex) show the distribution of feelings on life in respect to sex. The histogram show a nearly identical distribution on all numbers, and the female and the male respondents can be seen to have generally similar outlook on life. The only noticeable difference was in 10, where a significantly more female respondents answered 10 compared to male respondents. There is not enough evidence to see a difference between the two sexes in survey on how they perceive feelings on life.
 
 ```{r agecount, fig.cap="Number of Responses by Age Group", echo = FALSE, warning=FALSE, message=FALSE}
 gssurveyagegroup |>  
@@ -139,6 +139,31 @@ summary_gss |>
     )
 ```
 
+Next variable of interest in 'Age'. We will mutate this variable into categories with 10 year increments. In figure \@ref(fig:agecount) we see the number of respondents for each age group. The age group of 55 years to 64 years has the most amount of people at 4102, whereas the age group of 15 years to 24 years has the least amount of people at 1527. In table \@ref(tab:averagebyage), we can see the exact number of respondents for each age group and their mean value on feelings about life. Throughout the age groups, the mean is at 8.0 with a little increase towards the older population. Under this result, we can safely conclude that there is little to no correlation between age and feelings on life, at least until 55 years of age. It is worth noting that since it does increase with age past 55, it is possible that older people generally have more positive viewpoint on life and feelings on life has some correlation with age.
+
+```{r averagebyincome, echo=FALSE, warning=FALSE, message=FALSE}
+level_order <- c('Less than $25,000', '$25,000 to $49,999', 
+                 '$50,000 to $74,999', '$75,000 to $99,999', 
+                 '$100,000 to $124,999', '$125,000 and more')
+
+summary_gss2 <- 
+  gssurvey |> 
+    group_by(income_family) |> 
+    summarise(num = n(), average = mean(feelings_life, na.rm = TRUE)) |>
+    arrange(factor(income_family, levels = level_order))
+
+summary_gss2 |>
+    kable(
+      caption = "Mean Feeling of Life by Family Income",
+      col.names = c("Total Family Income", 
+                    "Number of Respondents", 
+                    "Average Feeling of Life"),
+      digits = 1,
+      booktabs = TRUE, 
+      linesep = ""
+    )
+```
+
 
 ```{r incomevsfeelings, fig.cap="Number of Perceived Feelings on Life Responses by Household Income", echo = FALSE, warning=FALSE, message=FALSE}
 level_order <- c('Less than $25,000', '$25,000 to $49,999', 
@@ -159,6 +184,8 @@ gssurvey |>
   scale_y_continuous(breaks=seq(0, 10, 1)) 
 
 ```
+
+We will then analyze the relationship with economical levels. The next variable of interest is 'Family Income'. The self-reported amount of income a household makes is split into categories ranging from less than 25,000 dollars to greater than 125,000 dollars. Table \@ref(tab:averagebyincome) shows the number of respondents in each income categories and its average reported feelings on life. From the table, it is evident that average feelings on life gradually increase with household income. For people that earn less than 25,000 dollar in family income, their perceived feelings on life is at 7.5. However, for people that earn more than 100,000 dollars, their perceived feeling on life is almost a whole point higher at 8.4. Figure  \@ref(fig:incomevsfeelings) show the distribution of answers separated by family income. Overall, majority of respondents seem to have a positive outlook on life and selected 5 and above regardless of income. One noticeable difference is that respondents that answered 3 or less increased as household income decreased. The graph also gives the impression that more people voted for 8 and above in the higher income brackets compared to the lower income brackets. The economical levels appears to be a reasonable indicator of feelings on life with some level of correlation.
 
 ```{r healthvsfeelings, fig.cap="Self Rated Health versus Feeling on Life and Self Rated Mental Health versus Feeling on Life",echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -199,23 +226,28 @@ mhealth <-
 ```
 removeed NA and DOn't KNow responses
 
+Finally, we will inspect two closely related variables: 'Self Rated Health' and 'Self Rated Mental Health'. These two variables report the self-examined status on the respondents' mental and physical health. Figure 5 show the relationship between feelings on life and self rated health, and figure 6 show the relationship between feelings on life and self rated mental health. In both of the graphs, responses of `Don't Know` and `NA` have been filtered out to accurately assess the possible correlation. Figure 5 displays that 
+
 # Results
 
 # Discussion
 
 ## First discussion point
 
-why ____ has such high count
+DOes the older population have more positive outlook in life>
 
 ## Second discussion point
 
-why ____ has such high correlation
+Economic levels and happniess
 
 ## Third discussion point
+
+Health and happniess
 
 ## Weaknesses and next steps
 
 Weaknesses and next steps should also be included.
+
 
 \newpage
 
@@ -225,7 +257,6 @@ Weaknesses and next steps should also be included.
 
 
 # Additional details
-
 
 \newpage
 
