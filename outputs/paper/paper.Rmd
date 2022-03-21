@@ -2,7 +2,7 @@
 title: "My title"
 author: 
   - Eunkyo Oh
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/oheunkyo/."
 date: "`r format(Sys.time(), '%d %B %Y')`"
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 output:
@@ -42,14 +42,32 @@ gssurvey <-
   select(age, 
          feelings_life, 
          sex,
-         education, 
-         own_rent, 
-         living_arrangement, 
          self_rated_health, 
          self_rated_mental_health, 
-         religion_has_affiliation, 
-         income_family, 
-         income_respondent)
+         income_family)
+
+gssurveyagegroup <- 
+  gssurvey |> 
+  mutate(age_group = 
+           case_when(age < 26 ~ "16-25",
+                     age < 36 ~ "26-35",
+                     age < 46 ~ "36-45",
+                     age < 56 ~ "46-55",
+                     age < 66 ~ "56-65",
+                     age < 76 ~ "66-75",
+                     age < 100 ~ ">76"
+                     ),
+         age_group = factor(age_group,
+                            levels = c("16-25",
+                                       "26-35",
+                                       "36-45",
+                                       "46-55",
+                                       "56-65",
+                                       "66-75",
+                                       ">76"
+                                       )
+                            )
+         )
 
 gssurvey |> 
   slice(1:10) |> 
@@ -63,9 +81,119 @@ gssurvey |>
 
 ```
 
-age vs feelings
-sex vs feelings
-education vs feelings
+
+```{r feelingscount, fig.cap="Number of Perceived Feelings on Life Responses", echo = FALSE, warning=FALSE, message=FALSE}
+gssurvey |> 
+  ggplot(mapping = aes(x = feelings_life)) +
+  geom_histogram(bins = 11, fill="aquamarine4") +
+  theme_minimal() +
+  labs(x = "Feelings on life (ten point scale)",
+       y = "Number of respondents") +
+  scale_x_continuous(breaks=seq(0, 10, 1))
+```
+
+
+```{r feelingsvssex, fig.cap="Number of Perceived Feelings on Life Responses by Sex", echo = FALSE, warning=FALSE, message=FALSE}
+gssurvey |> 
+  ggplot(mapping = aes(x = feelings_life, fill = sex)) +
+  geom_bar(position = "dodge") +
+  theme_minimal() +
+  labs(x = "Feelings on life (ten point scale)",
+       y = "Number of respondents",
+       fill = "Sex") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_x_continuous(breaks=seq(0, 10, 1))
+```
+
+
+```{r agecount, fig.cap="Number of Responses by Age Group", echo = FALSE, warning=FALSE, message=FALSE}
+gssurveyagegroup |>  
+  ggplot(mapping = aes(x = age_group, fill = feelings_life)) +
+  geom_bar(fill="aquamarine4") +
+  theme_minimal() + 
+  labs(x = "Age groups",
+       y = "Number of respondents")
+```
+
+```{r averagebyage, echo=FALSE, warning=FALSE, message=FALSE}
+# making a new data to find proportions of people per location
+summary_gss <- 
+  gssurveyagegroup |> 
+    group_by(age_group) |> 
+    summarise(num = n(), average = mean(feelings_life, na.rm = TRUE))
+
+# Creating a table 
+summary_gss |>
+    kable(
+      caption = "Mean Feeling of Life by Age Group",
+      col.names = c("Age Group", 
+                    "Number of Respondents", 
+                    "Average Feeling of Life"),
+      digits = 1,
+      booktabs = TRUE, 
+      linesep = ""
+    )
+```
+
+
+```{r incomevsfeelings, fig.cap="Number of Perceived Feelings on Life Responses by Household Income", echo = FALSE, warning=FALSE, message=FALSE}
+level_order <- c('Less than $25,000', '$25,000 to $49,999', 
+                 '$50,000 to $74,999', '$75,000 to $99,999', 
+                 '$100,000 to $124,999',
+                 '$125,000 and more')
+
+gssurvey |>
+  filter(income_family %in% level_order) |>
+  ggplot(mapping = aes(x = factor(income_family, levels = level_order), y = feelings_life, color = income_family)) +
+  geom_jitter() +
+  geom_smooth() +
+  theme_minimal() +
+  labs(x = "Household Income (CAD)",
+       y = "Feelings on life (ten point scale)") +
+  guides(color="none") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_y_continuous(breaks=seq(0, 10, 1)) 
+
+```
+
+```{r healthvsfeelings, fig.cap="Self Rated Health versus Feeling on Life and Self Rated Mental Health versus Feeling on Life",echo=FALSE, warning=FALSE, message=FALSE}
+
+library(patchwork)
+
+level_order <- c('Poor', 'Fair', 'Good', 'Very good', 'Excellent')
+health <-
+  gssurvey |>
+  filter(self_rated_health %in% level_order) |>
+    ggplot(mapping = aes(x = factor(self_rated_health, level=level_order), 
+                         y = feelings_life, color = self_rated_health)) +
+    geom_jitter() +
+    geom_smooth() +
+    theme_minimal() +
+    labs(x = "Self rated health (ten point scale)",
+         y = "Feelings on life (ten point scale)",
+         caption = "Figure 5: Self Rated \n Health versus Feeling on Life") +
+    guides(color="none") +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_y_continuous(breaks=seq(0, 10, 1)) 
+
+mhealth <-
+  gssurvey |>
+  filter(self_rated_mental_health %in% level_order) |>
+    ggplot(mapping = aes(x = factor(self_rated_mental_health, level=level_order), 
+                         y = feelings_life, color = self_rated_mental_health)) +
+    geom_jitter() +
+    geom_smooth() +
+    theme_minimal() +
+    labs(x = "Self rated mental health (ten point scale)",
+         y = "Feelings on life (ten point scale)",
+         caption = "Figure 6: Self Rated Mental \n Health versus Feeling on Life") +
+    guides(color="none") +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_y_continuous(breaks=seq(0, 10, 1))
+
+(health + mhealth)
+```
+removeed NA and DOn't KNow responses
 
 # Results
 
