@@ -24,7 +24,7 @@ library(tidyverse)
 
 In the 2017 General Social Survey, respondents were given a question on how they feel about life as a whole. Canadians answered the question with a numeric value with zero being the lowest and ten being the highest. Although the general population responded with a high number, the answers included all eleven numbers on the scale. With other variables on the survey that recorded answers on various aspects, we will perform various analyses to derive a result suggesting which variable has the highest correlation. This paper attempts to formulate multiple procedures in achieving the desired outcome. First, we observe the overall distribution of the score. Then, we compare the results against sex and age. Moreover, we analyze family income. Finally, we compare the score with self reported health and self reported mental health. Throughout the analyses, we concluded that self reported health and self reported mental health had the highest visible correlation with feelings about life as a whole. Continuing work could include finding more variables that show correlation and using statistical models to find the most significant variable. We will refer to feelings about life as a whole as feelings about life throughout the paper.
 
-The remainder of the paper is as follows: Section \@ref(data) performs the analyses using plots and tables and Section \@ref(results) explains the conclusion reached by the data. Following the conclusion there are three discussion points in Section \@ref(health,-mental-health-and-happiness), Section \@ref(economic-status-and-happiness), and Section \@ref(old-age-and-happiness). Then the paper goes over weaknesses and ideas for next steps in Section \@ref(weaknesses-and-next-steps).
+The remainder of the paper is as follows: Section \@ref(data) performs the analyses using plots and tables and Section \@ref(results) explains the conclusion reached by the data. Following the conclusion there are three discussion points in Section \@ref(health-and-happiness), Section \@ref(economic-status-and-happiness), and Section \@ref(old-age-and-happiness). Then the paper goes over weaknesses and ideas for next steps in Section \@ref(weaknesses-and-next-steps).
 
 # Data
 
@@ -231,21 +231,21 @@ Finally, we will inspect two closely related variables: 'Self Rated Health' and 
 
 # Results
 
-Out of the variables we compared to feelings about life, 'Self Rated Health' and 'Self Rated Mental Health' showed the most amount of visible correlation. People with better self-perceived health and mental health generally had more positive outlook in life, whereas poor conditions of both variables reported a negative outlook. Economical status also displayed a detectable correlation, with higher family income produced less negative feelings. Age and sex did not produce any perceptible relations, although higher age showed a minor increase in feelings on life.
+Out of the variables we compared to feelings about life, 'Self Rated Health' and 'Self Rated Mental Health' showed the most amount of visible correlation. People with better self-perceived health and mental health generally had more positive outlook in life, whereas poor conditions of both variables reported a negative outlook. Economical status also displayed a detectable correlation, with higher family income produced less negative feelings. Age and sex did not produce any significant relations, although higher age showed a minor increase in feelings on life.
 
 # Discussion
 
-## Health, Mental Health and Happiness
+## Health and Happiness
 
-DOes the older population have more positive outlook in life>
+To further analyze the relationship between physical and mental health and feelings about life, we will focus on one crucial aspect of positive feelings: happiness. Since we do not know the causal relation between the two variables, we need to be open to all of the options. One is that better health increases happiness. This is possible as negative emotions develop from feelings of powerlessness and pain. The other option is that happiness improves health. In many studies, happiness is seen to lower your blood pressure, improve sleep, lowers the risk of cardiovascular diseases, and reduce stress [@citehealth]. Optimism and positivity are also known to be linked to the overall well-being of a person, and these reasons may be why we saw that the health had clear relationship with overall feelings about life. 
 
 ## Economic Status and Happiness
 
-Economic levels and happniess
+Does money buy happiness? This is a question often debated from scholarly articles to dinner tables. In one study in 2010, it was reported that happiness and wealth had direct relationship and happiness increased with income, but only up to about 75,000 dollars a year [@gaetano]. After the salary of 75,000 dollars, happiness did not increase thus a person making 100,000 dollars a year had similar levels of happiness as someone making 75,000 dollars a year. This is thought to be because although wealth and happiness does not have a causal relation, wealth removes a lot of financial stress which in turn increases satisfaction. In another study, income produced higher evaluation of life, but had no relationship with emotional well-being, which aligns with our outcomes [@kahneman].
 
 ## Old Age and Happiness
 
-Health and happniess
+Last discussion point asks why there was an uptick in feelings about life with old age, whereas no trend was found with younger age. One possible explanation of this is related to health as discussed above. If happier people tend to be more healthy, then they will live longer on average, thus increasing the mean score for old age. One study found that happier people had a greater chance of living longer, and had greater chance living past 85 years of age [@topor]. It is plausible that these two variables do not have a direct causal relation but have a common causal variable such as health.
 
 ## Weaknesses and next steps
 
@@ -260,7 +260,26 @@ Next steps might include comparing feelings about life with other important vari
 # Appendix {-}
 
 
-# Additional details
+# Supplementary Survey
+
+A supplementary survey has been made to further assess the relationship inquired in the paper [here](https://forms.gle/dVZN2XFPy5deFeXx6).
+
+Direct URL: https://forms.gle/dVZN2XFPy5deFeXx6
+
+This survey aims to find relationships of Canadian residents' feelings about life with various variable such as age, economical status, and self rated health. Feel free to answer 'N/A' on any questions you feel uncomfortable answering. 
+
+There are 10 questions: 
+
+  - Age
+  - Sex
+  - Self rated physical health
+  - Self rated mental health
+  - History of medication
+  - History of illness
+  - Household income
+  - Disposable income
+  - Disposable savings
+  - Feelings about life as a whole.
 
 \newpage
 
