@@ -4,7 +4,7 @@ author:
   - Eunkyo Oh
 thanks: "Code and data are available at: https://github.com/oheunkyo/Feelings-on-Life-GSS."
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Everyone has different viewpoints on life, and the viewpoints are impacted by diverse factors. In this paper, we gather data on Canadian residents' general feelings about life as a whole and compare it to various variables to find correlations. From the result of the General Social Survey 2017 on family, we manipulate the data to show that feelings about life as a whole have the most perceptible connections to health and mental health, and economical status to a lesser degree. This may give us directions on how happiness is linked with one's physical and mental health."
 output:
   bookdown::pdf_document2:
     includes:  
@@ -22,11 +22,13 @@ library(tidyverse)
 
 # Introduction
 
-We will refer to feelings about life as a whole as feelings on life throughtout the paper
+In the 2017 General Social Survey, respondents were given a question on how they feel about life as a whole. Canadians answered the question with a numeric value with zero being the lowest and ten being the highest. Although the general population responded with a high number, the answers included all eleven numbers on the scale. With other variables on the survey that recorded answers on various aspects, we will perform various analyses to derive a result suggesting which variable has the highest correlation. This paper attempts to formulate multiple procedures in achieving the desired outcome. First, we observe the overall distribution of the score. Then, we compare the results against sex and age. Moreover, we analyze family income. Finally, we compare the score with self reported health and self reported mental health. Throughout the analyses, we concluded that self reported health and self reported mental health had the highest visible correlation with feelings about life as a whole. Continuing work could include finding more variables that show correlation and using statistical models to find the most significant variable. We will refer to feelings about life as a whole as feelings about life throughout the paper.
+
+The remainder of the paper is as follows: Section \@ref(data) performs the analyses using plots and tables and Section \@ref(results) explains the conclusion reached by the data. Following the conclusion there are three discussion points in Section \@ref(health,-mental-health-and-happiness), Section \@ref(economic-status-and-happiness), and Section \@ref(old-age-and-happiness). Then the paper goes over weaknesses and ideas for next steps in Section \@ref(weaknesses-and-next-steps).
 
 # Data
 
-The data we are going to analyze is the result of Canadian General Social Survey on Family (2017). The data is organized in respect to its age, sex, education, number of children, and other variables totaling up to eighty one entries. This survey was performed from February 2 to November 30, 2017, and it may not correctly represent the current state of the respondents' familial status. Each respondent is fifteen years old or older, a full-time residents in Canada excluding Yukon, Northwest Territories, and Yukon. There are 20602 responses in the data. We obtain our dataset from the University of Toronto Library, available to University of Toronto students and faculty members. This data can also be found in databases of other academic institutions to their staff and students. We modify and clean our data using packages `tidyverse` [@citetidyverse] and `janitor` [@citejanitor] using the and the statistical programming language R [@citeR]. 
+The data we are going to analyze is the result of the Canadian General Social Survey on Family (2017). The data is organized in respect to its age, sex, education, number of children, and other variables totaling up to eighty one entries. This survey was performed from February 2 to November 30, 2017, and it may not correctly represent the current state of the respondents' familial status. Each respondent is fifteen years old or older, a full-time resident in Canada excluding Yukon, Northwest Territories, and Yukon. There are 20602 responses in the data. We obtain our dataset from the University of Toronto Library, available to University of Toronto students and faculty members. This data can also be found in databases of other academic institutions to their staff and students. We modify and clean our data using packages `tidyverse` [@citetidyverse] and `janitor` [@citejanitor] using the and the statistical programming language R [@citeR]. 
 
 After obtaining our data, we reduce the number of variables to only contain the necessary columns. In this paper, we will focus on six columns: age, feelings about life as a whole, sex, self rated health, self rated mental health, and household income. Age is given as an number with one digit after the decimal point with the lowest possible number being 15. The column has been named as `AGEC`. Column `SEX` represents the self reported sex of the respondent with `1` being male and `2` being female. The responses has been renamed to `male` and `female` respectably. Feelings about life as a whole is in the variable `SLM_01`, and it is a eleven-point scale question on how the respondent perceives life as a whole including satisfaction. Zero in the scale means 'Very Dissatisfied' and ten means 'Very Satisfied'. Variables `SRH_110` and `SRH_115` are the self rated health and self rated mental health respectably. Respondents' answers were recorded with a numeric value between one to five, where one means 'Excellent' health or mental health and five means 'Poor' health or mental health. The answers have been renamed to `Excellent`, `Very good`, `Good`, `Fair`, and `Poor`. The answers also include `NA` and `Don't know`, which has been renamed accordingly as well. Finally, household income is reported in the variable `FAMINCG2` and it is reported in increments of 25,000 Canadian dollars, up to 125,000 dollars. All variables have been renamed as following for better readability: `age`, `sex`, `feelings_life`, `self_rated_health`, `self_rated_mental_health`, and `income_family`.
 
@@ -83,32 +85,32 @@ gssurvey |>
 
 ```
 
-Table \@ref(tab:dataextract) represents the first ten rows of our dataset. The table was created with `knitr::kable()` [@citeknitr]. We are interested in which variable show signs of correlation with the responses about feelings on life as a whole. Figure \@ref(fig:feelingscount) shows the overall distribution of the responses on how respondents feel about life. From this figure, it is clear that general population has a positive outlook on life. Most of the responses are above 6, with the highest number being 8. Second most popular response was 10, the best score one can give. Figures in the paper were created with `ggplot2` [@citeggplot]
+Table \@ref(tab:dataextract) represents the first ten rows of our dataset. The table was created with `knitr::kable()` [@citeknitr]. We are interested in which variables show signs of correlation with the responses about feelings about life as a whole. Figure \@ref(fig:feelingscount) shows the overall distribution of the responses on how respondents feel about life. From this figure, it is clear that the general population has a positive outlook on life. Most of the responses are above 6, with the highest number being 8. Second most popular response was 10, the best score one can give. Figures in the paper were created with `ggplot2` [@citeggplot]
 
-```{r feelingscount, fig.cap="Number of Perceived Feelings on Life Responses", echo = FALSE, warning=FALSE, message=FALSE}
+```{r feelingscount, fig.cap="Number of Perceived Feelings About Life Responses", echo = FALSE, warning=FALSE, message=FALSE}
 gssurvey |> 
   ggplot(mapping = aes(x = feelings_life)) +
   geom_histogram(bins = 11, fill="aquamarine4") +
   theme_minimal() +
-  labs(x = "Feelings on life (ten point scale)",
+  labs(x = "Feelings About life",
        y = "Number of respondents") +
   scale_x_continuous(breaks=seq(0, 10, 1))
 ```
 
 
-```{r feelingsvssex, fig.cap="Number of Perceived Feelings on Life Responses by Sex", echo = FALSE, warning=FALSE, message=FALSE}
+```{r feelingsvssex, fig.cap="Number of Perceived Feelings About Life Responses by Sex", echo = FALSE, warning=FALSE, message=FALSE}
 gssurvey |> 
   ggplot(mapping = aes(x = feelings_life, fill = sex)) +
   geom_bar(position = "dodge") +
   theme_minimal() +
-  labs(x = "Feelings on life (ten point scale)",
+  labs(x = "Feelings About life",
        y = "Number of respondents",
        fill = "Sex") +
   scale_fill_brewer(palette = "Dark2") +
   scale_x_continuous(breaks=seq(0, 10, 1))
 ```
 
-First variable I chose to examine was 'Sex'. Figure \@ref(fig: feelingsvssex) show the distribution of feelings on life in respect to sex. The histogram show a nearly identical distribution on all numbers, and the female and the male respondents can be seen to have generally similar outlook on life. The only noticeable difference was in 10, where a significantly more female respondents answered 10 compared to male respondents. There is not enough evidence to see a difference between the two sexes in survey on how they perceive feelings on life.
+First variable I chose to examine was 'Sex'. Figure \@ref(fig: feelingsvssex) shows the distribution of feelings on life in respect to sex. The histogram shows a nearly identical distribution on all numbers, and the female and the male respondents can be seen to have generally similar outlook on life. The only noticeable difference was in 10, where significantly more female respondents answered 10 compared to male respondents. There is not enough evidence to see a difference between the two sexes in the survey on how they perceive feelings about life.
 
 ```{r agecount, fig.cap="Number of Responses by Age Group", echo = FALSE, warning=FALSE, message=FALSE}
 gssurveyagegroup |>  
@@ -129,17 +131,17 @@ summary_gss <-
 # Creating a table 
 summary_gss |>
     kable(
-      caption = "Mean Feeling of Life by Age Group",
+      caption = "Mean Feeling about Life by Age Group",
       col.names = c("Age Group", 
                     "Number of Respondents", 
-                    "Average Feeling of Life"),
+                    "Average Feeling about Life"),
       digits = 1,
       booktabs = TRUE, 
       linesep = ""
     )
 ```
 
-Next variable of interest in 'Age'. We will mutate this variable into categories with 10 year increments. In figure \@ref(fig:agecount) we see the number of respondents for each age group. The age group of 55 years to 64 years has the most amount of people at 4102, whereas the age group of 15 years to 24 years has the least amount of people at 1527. In table \@ref(tab:averagebyage), we can see the exact number of respondents for each age group and their mean value on feelings about life. Throughout the age groups, the mean is at 8.0 with a little increase towards the older population. Under this result, we can safely conclude that there is little to no correlation between age and feelings on life, at least until 55 years of age. It is worth noting that since it does increase with age past 55, it is possible that older people generally have more positive viewpoint on life and feelings on life has some correlation with age.
+Next variable of interest in 'Age'. We will mutate this variable into categories with 10 year increments. In figure \@ref(fig:agecount) we see the number of respondents for each age group. The age group of 55 years to 64 years has the most number of people at 4102, whereas the age group of 15 years to 24 years has the least number of people at 1527. In table \@ref(tab:averagebyage), we can see the exact number of respondents for each age group and their mean value on feelings about life. Throughout the age groups, the mean is at 8.0 with a little increase towards the older population. Under this result, we can safely conclude that there is little to no correlation between age and feelings about life, at least until 55 years of age. It is worth noting that since it does increase with age past 55, it is possible that older people generally have more positive viewpoints on life and feelings about life have some correlation with age.
 
 ```{r averagebyincome, echo=FALSE, warning=FALSE, message=FALSE}
 level_order <- c('Less than $25,000', '$25,000 to $49,999', 
@@ -165,7 +167,7 @@ summary_gss2 |>
 ```
 
 
-```{r incomevsfeelings, fig.cap="Number of Perceived Feelings on Life Responses by Household Income", echo = FALSE, warning=FALSE, message=FALSE}
+```{r incomevsfeelings, fig.cap="Number of Perceived Feelings About Life Responses by Household Income", echo = FALSE, warning=FALSE, message=FALSE}
 level_order <- c('Less than $25,000', '$25,000 to $49,999', 
                  '$50,000 to $74,999', '$75,000 to $99,999', 
                  '$100,000 to $124,999',
@@ -178,16 +180,16 @@ gssurvey |>
   geom_smooth() +
   theme_minimal() +
   labs(x = "Household Income (CAD)",
-       y = "Feelings on life (ten point scale)") +
+       y = "Feelings about life") +
   guides(color="none") +
   scale_fill_brewer(palette = "Dark2") +
   scale_y_continuous(breaks=seq(0, 10, 1)) 
 
 ```
 
-We will then analyze the relationship with economical levels. The next variable of interest is 'Family Income'. The self-reported amount of income a household makes is split into categories ranging from less than 25,000 dollars to greater than 125,000 dollars. Table \@ref(tab:averagebyincome) shows the number of respondents in each income categories and its average reported feelings on life. From the table, it is evident that average feelings on life gradually increase with household income. For people that earn less than 25,000 dollar in family income, their perceived feelings on life is at 7.5. However, for people that earn more than 100,000 dollars, their perceived feeling on life is almost a whole point higher at 8.4. Figure  \@ref(fig:incomevsfeelings) show the distribution of answers separated by family income. Overall, majority of respondents seem to have a positive outlook on life and selected 5 and above regardless of income. One noticeable difference is that respondents that answered 3 or less increased as household income decreased. The graph also gives the impression that more people voted for 8 and above in the higher income brackets compared to the lower income brackets. The economical levels appears to be a reasonable indicator of feelings on life with some level of correlation.
+We will then analyze the relationship with economical levels. The next variable of interest is 'Family Income'. The self-reported amount of income a household makes is split into categories ranging from less than 25,000 dollars to greater than 125,000 dollars. Table \@ref(tab:averagebyincome) shows the number of respondents in each income category and its average reported feelings on life. From the table, it is evident that average feelings on life gradually increase with household income. For people that earn less than 25,000 dollar in family income, their perceived feelings on life is at 7.5. However, for people that earn more than 100,000 dollars, their perceived feeling on life is almost a whole point higher at 8.4. Figure  \@ref(fig:incomevsfeelings) shows the distribution of answers separated by family income. Overall, the majority of respondents seem to have a positive outlook on life and selected 5 and above regardless of income. One noticeable difference is that respondents that answered 3 or less increased as household income decreased. The graph also gives the impression that more people voted for 8 and above in the higher income brackets compared to the lower income brackets. The economical level appears to be a reasonable indicator of feelings on life with some level of correlation.
 
-```{r healthvsfeelings, fig.cap="Self Rated Health versus Feeling on Life and Self Rated Mental Health versus Feeling on Life",echo=FALSE, warning=FALSE, message=FALSE}
+```{r healthvsfeelings, fig.cap="Self Rated Health versus Feeling About Life and Self Rated Mental Health versus Feeling on Life",echo=FALSE, warning=FALSE, message=FALSE}
 
 library(patchwork)
 
@@ -201,8 +203,8 @@ health <-
     geom_smooth() +
     theme_minimal() +
     labs(x = "Self rated health (ten point scale)",
-         y = "Feelings on life (ten point scale)",
-         caption = "Figure 5: Self Rated \n Health versus Feeling on Life") +
+         y = "Feelings about life",
+         caption = "Figure 5a: Self Rated \n Health versus Feeling on Life") +
     guides(color="none") +
     scale_fill_brewer(palette = "Dark2") +
     scale_y_continuous(breaks=seq(0, 10, 1)) 
@@ -216,8 +218,8 @@ mhealth <-
     geom_smooth() +
     theme_minimal() +
     labs(x = "Self rated mental health (ten point scale)",
-         y = "Feelings on life (ten point scale)",
-         caption = "Figure 6: Self Rated Mental \n Health versus Feeling on Life") +
+         y = "Feelings about life",
+         caption = "Figure 5b: Self Rated Mental \n Health versus Feeling on Life") +
     guides(color="none") +
     scale_fill_brewer(palette = "Dark2") +
     scale_y_continuous(breaks=seq(0, 10, 1))
@@ -225,28 +227,31 @@ mhealth <-
 (health + mhealth)
 ```
 
-Finally, we will inspect two closely related variables: 'Self Rated Health' and 'Self Rated Mental Health'. These two variables report the self-examined status on the respondents' mental and physical health. Figure 5 show the relationship between feelings on life and self rated health, and figure 6 show the relationship between feelings on life and self rated mental health. In both of the graphs, responses of `Don't Know` and `NA` have been filtered out to accurately assess the possible correlation. Figure 5 displays that 
+Finally, we will inspect two closely related variables: 'Self Rated Health' and 'Self Rated Mental Health'. These two variables report the self-examined status on the respondents' mental and physical health. Figure 5a shows the relationship between feelings on life and self rated health, and figure 5b shows the relationship between feelings on life and self rated mental health. In both of the graphs, responses of `Don't Know` and `NA` have been filtered out to accurately assess the possible correlation. Figure 5a displays that there is a clear correlation between self rated health and feelings on life. The respondents who submitted `Poor` on 'Self Rated Health' seem to have a dispersed distribution of feelings on life, with a great quantity below 5 and even a cluster of responses at 1. There also seems to be less number of people that answered 10. On the contrary, as the response for self rated health increases positively there are noticeably fewer responses below 5 on feelings about life. Additionally, figure 5b displays a similar trend in between the axes. Respondents with self rated mental health of `Poor` tend to have a more spread out distribution. However, the difference on figure 5b is more striking. The respondents who answered 6 and above on feelings on life while answering `Poor` seem to be very scarce, whereas there are a similar number of people who answered 4 and below. The overall graph also shows general increase in feelings on life responses as the self reported mental health improves, but the difference seems more drastic compared to figure 5a with self reported health. From the plots above we can conclude that health and mental health definitely seems to have correlation with one's viewpoint on life, although it is self reported and it is a subjective variable.
 
 # Results
 
+Out of the variables we compared to feelings about life, 'Self Rated Health' and 'Self Rated Mental Health' showed the most amount of visible correlation. People with better self-perceived health and mental health generally had more positive outlook in life, whereas poor conditions of both variables reported a negative outlook. Economical status also displayed a detectable correlation, with higher family income produced less negative feelings. Age and sex did not produce any perceptible relations, although higher age showed a minor increase in feelings on life.
+
 # Discussion
 
-## First discussion point
+## Health, Mental Health and Happiness
 
 DOes the older population have more positive outlook in life>
 
-## Second discussion point
+## Economic Status and Happiness
 
 Economic levels and happniess
 
-## Third discussion point
+## Old Age and Happiness
 
 Health and happniess
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
+There are few weaknesses with how the analysis was carried out. Self rated health and self rated mental health are two variables where the response is subjective and can have different criteria for each respondent. Each person might perceive same health levels different and record varying answers. This ambiguity create an uncertainty on whether these variables are truly fit for the assessment performed in this paper. More precise analyses would have been done with objective rating on physical and mental health performed by people with professions on medical field. Moreover, many variables in the survey can be seen as a flawed figure in diversity and inclusiveness. In the sex variable, it only included the two sexes, male and female. If it included more genders it might show a different relations with feelings on life. Furthermore, our data is from the 2017 survey and it may not accurately represent the current situation. Lastly, there are limitations on analyses performed with only visual clues, lacking actual statistical analyses.
 
+Next steps might include comparing feelings about life with other important variables such as family status and religion. We can also perform statistical analyses to find p-values and see the significance of each variables. This procedure would allow us to derive a more logically sound conclusion and let us accurately depict a picture on each variable's impact Canadian residents' happiness and satisfaction. 
 
 \newpage
 
